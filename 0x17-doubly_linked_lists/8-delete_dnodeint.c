@@ -10,24 +10,29 @@
 int delete_dnodeint_at_index(dlistint_t **head, unsigned int index)
 {
 	unsigned int i;
-	dlistint_t *new, *temp = *h;
+	dlistint_t *temp1, *temp0;
 
 	if (head == NULL)
-		return (NULL);
+		return (-1);
+	temp0 = *head;
+	if (index == 0)
+	{
+		*head = (*head)->next;
+		(*head)->prev = NULL;
+	}
+	else
+	{
+		/* increment to index or last node*/
+		for (i = 0; (i < index) && (temp0->next != NULL); i++)
+			temp0 = temp0->next;
+		if (index > i)
+			return (-1);
+		temp1 = temp0->prev;
+		temp1->next = temp0->next;
+		temp0->next->prev = temp1;
+	}
 
-	/* increment list to 1 before index */
-	for (i = 0; (i < index - 1) && (temp != NULL); i++)
-		temp = temp->next;
-	if (i != index - 1)
-		return (NULL);
+	free(temp0);
 
-	new->next = temp->next; /* points new node to the one after idx */
-	temp->next = new; /* sets one prior to new to point to new */
-	new->prev = temp; /* sets new-prev */
-	temp = new->next; /* increments list to one after idx */
-	temp->prev = new; /* sets one after new's -prev to point to new */
-
-	free(the old one);
-
-	return (new);
+	return (1);
 }
