@@ -28,8 +28,12 @@ dlistint_t *insert_dnodeint_at_index(dlistint_t **h, unsigned int idx, int n)
 	/* increment list to 1 before idx */
 	for (i = 0; (i < idx - 1) && (temp->next != NULL); i++)
 		temp = temp->next;
-	if (i != idx - 1)
+	/* if NULL node was reached but idx wasn't */
+	if (idx - 1 > i)
 		return (NULL);
+	/* if idx was reached and... */
+	if (temp->next == NULL)
+		return (add_dnodeint_end(h, n));
 
 	new->next = temp->next; /* points new node to the one after idx */
 	temp->next = new; /* sets one prior to new to point to new */
