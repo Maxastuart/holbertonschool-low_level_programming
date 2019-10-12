@@ -6,13 +6,12 @@
  */
 void hash_table_print(const hash_table_t *ht)
 {
-	unsigned long int i = 0;
-	unsigned long int count = 0;
+	unsigned long int i, count = 0;
 
 	if (ht == NULL)
 		return;
 	printf("{");
-	for (; i < ht->size; i++)
+	for (i = 0; i < ht->size; i++)
 	{
 		if (ht->array[i] != NULL)
 		{
