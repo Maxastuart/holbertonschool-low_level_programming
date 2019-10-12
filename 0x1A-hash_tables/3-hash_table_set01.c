@@ -13,6 +13,7 @@ hash_node_t *set_pair(const char *key, const char *value)
 
 	if (node == NULL)
 		return (0);
+	printf("hi from set_pair\n");
 	node->key = malloc(strlen(key) + 1);
 	if (node->key == NULL)
 		return (0);
@@ -21,6 +22,8 @@ hash_node_t *set_pair(const char *key, const char *value)
 		return (0);
 	strcpy(node->key, key);
 	strcpy(node->value, value);
+	if (strcmp(node->key, key) == 0)
+		printf("set_pair succeeded\n");
 	return (node);
 }
 
@@ -43,9 +46,12 @@ int hash_table_set(hash_table_t *ht, const char *key, const char *value)
 	node = ht->array[index];
 	if (node == NULL)
 	{
+		printf("calling set_pair before while loop\n");
 		node = set_pair(key, value);
 		node->next = NULL;
 		ht->array[index] = node;
+		if (strcmp(ht->array[index]->key, key) == 0)
+			printf("assigning key and value worked\n");
 		return (1);
 	}
 	while (node != NULL)
