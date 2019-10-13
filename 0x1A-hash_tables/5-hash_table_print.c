@@ -21,8 +21,7 @@ void hash_table_print(const hash_table_t *ht)
 			{
 				if (count > 0)
 					printf(", ");
-				printf("'%s': '%s'", node->key,
-				       hash_table_get(ht, node->key));
+				printf("'%s': '%s'", node->key, node->value);
 				node = node->next;
 				count++;
 			}
