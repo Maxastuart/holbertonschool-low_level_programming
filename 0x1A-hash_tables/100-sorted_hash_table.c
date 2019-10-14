@@ -289,9 +289,26 @@ void shash_table_print_rev(const shash_table_t *ht)
 }
 
 /**
- *
+ * shash_table_delete - deletes a sorted hash table
+ * @ht: the sorted hash table.
+ */
 void shash_table_delete(shash_table_t *ht)
 {
-	
+	unsigned long int i = 0;
+	shash_node_t *node;
+
+	while (i < ht->size)
+	{
+		while (ht->array[i] != NULL)
+		{
+			node = ht->array[i]->next;
+			free(ht->array[i]->key);
+			free(ht->array[i]->value);
+			free(ht->array[i]);
+			ht->array[i] = node;
+		}
+		i++;
+	}
+	free(ht->array);
+	free(ht);
 }
-*/
