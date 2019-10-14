@@ -51,6 +51,11 @@ shash_node_t *set_pair(const char *key, const char *value);
 shash_node_t *set_pair_only(shash_table_t *ht, const char *key,
 			    const char *value, unsigned long int index);
 
+int update_value(shash_node_t *node, const char *value);
+
+shash_node_t *set_pair_front(shash_table_t *ht, const char *key,
+                             const char *value, unsigned long int index);
+
 shash_table_t *shash_table_create(unsigned long int size);
 
 int shash_table_set(shash_table_t *ht, const char *key, const char *value);

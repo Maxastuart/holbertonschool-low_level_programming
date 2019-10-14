@@ -14,9 +14,14 @@ shash_table_t *shash_table_create(unsigned long int size)
         if (ht == NULL)
                 return (NULL);
         ht->size = size;
+	ht->shead = NULL;
+	ht->stail = NULL;
         ht->array = malloc(sizeof(shash_node_t *) * size);
         if (ht->array == NULL)
+	{
+		free(ht);
                 return (NULL);
+	}
         for (; i < size; i++)
                 ht->array[i] = NULL;
         return (ht);
@@ -75,7 +80,7 @@ shash_node_t *set_pair_only(shash_table_t *ht, const char *key,
  *
  * Return: 1 on success, 0 on fail.
  */
-int update_value(node, value)
+int update_value(shash_node_t *node, const char *value)
 {
 	if (strcmp(node->value, value) == 0)
 		return (1);
@@ -85,6 +90,44 @@ int update_value(node, value)
 		return (0);
 	strcpy(node->value, value);
 	return (1);
+}
+
+/**
+ * set_pair_front() - sets key:value pair node to front of given index's list.
+ * @ht: pointer to the sorted hash table.
+ * @key: the key, a string that cannot be empty.
+ * @value: the value associated with the key, can be an empty string.
+ * @index: the key's index.
+ *
+ * Return: the new node, or NULL if failed.
+ */
+shash_node_t *set_pair_front(shash_table_t *ht, const char *key,
+			     const char *value, unsigned long int index)
+{
+	shash_node_t *node;
+
+	node = set_pair(key, value);
+	if (node == NULL)
+		return (0);
+	node->next = ht->array[index];
+	ht->array[index] = node;
+	return (node);
+}
+
+/**
+ * slist_set_first - sets the first addition to the sorted list.
+ * @ht: pointer to the sorted hash table.
+ * @node: pointer to the first node on the table.
+ *
+ * Return: Always 1.
+ */
+int slist_set_first(shash_table_t *ht, shash_node_t *node)
+{
+		node->sprev = NULL;
+		node->snext = NULL;
+		ht->shead = node;
+		ht->stail = node;
+		return (1);
 }
 
 /**
@@ -106,52 +149,34 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 	index = key_index((unsigned char *)key, ht->size);
 	node = ht->array[index];
 	if (node == NULL)
-	{
 		node = set_pair_only(ht, key, value, index);
-		if (node == NULL)
-			return (NULL);
-	}
 	else
 	{
 		while (node != NULL)
 		{
 			if (strcmp(node->key, key) == 0)
-				return(update_value(node, value));
+				return (update_value(node, value));
 			node = node->next;
 		}
-		/* if (node == NULL) at end of ht->array[index] list: */
-/*
- * set_pair_front() - sets key:value pair node to front of list at given index
- * @ht: 
- * @key: 
- * @value: 
- * @index: 
- *
- * Return: node 
- */
-		node = set_pair(key, value);
-		if (node == NULL)
-			return (0);
-		node->next = ht->array[index];
-		ht->array[index] = node;
+		node = set_pair_front(ht, key, value, index);
 	}
+	if (node == NULL)
+		return (0);
 /* arrange the item in the sorted linked list */
 	if (ht->shead == NULL)
-	{
-		node->sprev == NULL;
-		node->snext == NULL;
-		ht->shead = node;
-		ht->stail = node;
-		return (1);
-	}
+		return (slist_set_first(ht, node));
 	curr_old_node = ht->shead;
 	while (curr_old_node != NULL)
 	{
 		if (strcmp(curr_old_node->key, node->key) >= 0)
-		{
+			return (slist_set(
 /* if old value is greater than or equal to new value put new value before old:
    if old->prev is NULL: make new the shead & new->prev = NULL.
    make new->next curr_old, make old prev the new head, make new prev null.) */
+/**
+ * slist_set - sets a node by key ascii value before the given old node.
+ */
+		{
 			if (curr_old_node->sprev == NULL)
 				ht->shead = node;
 			node->snext = curr_old_node;
