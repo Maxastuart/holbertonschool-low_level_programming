@@ -42,6 +42,9 @@ unsigned long int key_index(const unsigned char *key, unsigned long int size);
 
 hash_node_t *set_pair(const char *key, const char *value);
 
+int set_pair_only(hash_table_t *ht, const char *key, const char *value,
+		  unsigned long int size);
+
 int hash_table_set(hash_table_t *ht, const char *key, const char *value);
 
 char *hash_table_get(const hash_table_t *ht, const char *key);
