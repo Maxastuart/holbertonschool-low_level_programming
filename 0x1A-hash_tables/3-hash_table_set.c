@@ -25,6 +25,27 @@ hash_node_t *set_pair(const char *key, const char *value)
 }
 
 /**
+ * set_pair_only - (no collision) set key:value pair to first array element
+ * @ht: pointer to the hash table.
+ * @key: the key, a string that cannot be empty.
+ * @value: the value associated with the key, can be an empty string.
+ * @index: the key's index.
+ *
+ * Return: the node, or NULL if failed.
+ */
+int set_pair_only(hash_table_t *ht, const char *key,
+		  const char *value, unsigned long int index)
+{
+	hash_node_t *node = set_pair(key, value);
+
+	if (node == NULL)
+		return (0);
+	node->next = NULL;
+	ht->array[index] = node;
+	return (1);
+}
+
+/**
  * hash_table_set - adds an element to the hash table.
  * @ht: a pointer to the hash table array.
  * @key: the key, a string that cannot be empty.
@@ -42,14 +63,7 @@ int hash_table_set(hash_table_t *ht, const char *key, const char *value)
 	index = key_index((unsigned char *)key, ht->size);
 	node = ht->array[index];
 	if (node == NULL)
-	{
-		node = set_pair(key, value);
-		if (node == NULL)
-			return (0);
-		node->next = NULL;
-		ht->array[index] = node;
-		return (1);
-	}
+		return (set_pair_only(ht, key, value, index));
 	while (node != NULL)
 	{
 		if (strcmp(node->key, key) == 0)
