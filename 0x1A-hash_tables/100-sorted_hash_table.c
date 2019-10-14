@@ -63,9 +63,8 @@ shash_node_t *set_pair(const char *key, const char *value)
 shash_node_t *set_pair_only(shash_table_t *ht, const char *key,
 			     const char *value, unsigned long int index)
 {
-	shash_node_t *node;
+	shash_node_t *node = set_pair(key, value);
 
-	node = set_pair(key, value);
 	if (node == NULL)
 		return (NULL);
 	node->next = NULL;
@@ -93,7 +92,7 @@ int update_value(shash_node_t *node, const char *value)
 }
 
 /**
- * set_pair_front() - sets key:value pair node to front of given index's list.
+ * set_pair_front - sets key:value pair node to front of given index's list.
  * @ht: pointer to the sorted hash table.
  * @key: the key, a string that cannot be empty.
  * @value: the value associated with the key, can be an empty string.
@@ -104,9 +103,8 @@ int update_value(shash_node_t *node, const char *value)
 shash_node_t *set_pair_front(shash_table_t *ht, const char *key,
 			     const char *value, unsigned long int index)
 {
-	shash_node_t *node;
+	shash_node_t *node = set_pair(key, value);
 
-	node = set_pair(key, value);
 	if (node == NULL)
 		return (0);
 	node->next = ht->array[index];
@@ -131,6 +129,44 @@ int slist_set_first(shash_table_t *ht, shash_node_t *node)
 }
 
 /**
+ * slist_set - sets a new node before the given old node.
+ * @ht: pointer to the sorted hash table.
+ * @old_node: the node to place the new node in front of.
+ * @node: the new node to place in front of the old one.
+ *
+ * Return: Always 1 (success).
+ */
+int slist_set(shash_table_t *ht, shash_node_t *old_node, shash_node_t *node)
+{
+	if (old_node->sprev == NULL)
+		ht->shead = node;
+	node->snext = old_node;
+	node->sprev = old_node->sprev;
+	old_node->sprev = node;
+	if (node->sprev != NULL)
+		node->sprev->snext = node;
+	return (1);
+}
+
+/**
+ * slist_set_end - sets a node at the end of the sorted list
+ * @ht: pointer to the sorted hash table.
+ * @node: the node to place at the end.
+ *
+ * Return: Always 1 (success).
+ */
+int slist_set_end(shash_table_t *ht, shash_node_t *node)
+{
+	shash_node_t *old_node = ht->stail;
+
+	ht->stail = node;
+	node->snext = NULL;
+	node->sprev = old_node;
+	old_node->snext = node;
+	return (1);
+}
+
+/**
  * shash_table_set - adds or updates an element to the sorted hash table.
  * @ht: pointer to the sorted hash table.
  * @key: the key, a string that cannot be empty.
@@ -141,7 +177,7 @@ int slist_set_first(shash_table_t *ht, shash_node_t *node)
 int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 {
 	unsigned long int index;
-	shash_node_t *node;
+	shash_node_t *node, *curr_old_node;
 
 	if (key == NULL || ht == NULL)
 		return (0);
@@ -169,31 +205,10 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 	while (curr_old_node != NULL)
 	{
 		if (strcmp(curr_old_node->key, node->key) >= 0)
-			return (slist_set(
-/* if old value is greater than or equal to new value put new value before old:
-   if old->prev is NULL: make new the shead & new->prev = NULL.
-   make new->next curr_old, make old prev the new head, make new prev null.) */
-/**
- * slist_set - sets a node by key ascii value before the given old node.
- */
-		{
-			if (curr_old_node->sprev == NULL)
-				ht->shead = node;
-			node->snext = curr_old_node;
-			node->sprev = curr_old_node->sprev;
-			curr_old_node->sprev = node;
-			if (node->sprev != NULL)
-				node->sprev->snext = node;
-			return (1);
-		}
+			return (slist_set(ht, curr_old_node, node));
 		curr_old_node = curr_old_node->next;
 	}
-	curr_old_node = ht->stail;
-	ht->stail = node;
-	node->next = NULL;
-	node->prev = curr_old_node;
-	curr_old_node->next = node;
-	return (1);
+	return (slist_set_end(ht, node));
 }
 
 /**
