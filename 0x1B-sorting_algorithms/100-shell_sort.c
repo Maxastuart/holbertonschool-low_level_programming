@@ -19,7 +19,6 @@ void swap_int(int *a, int *b)
  * @array: pointer to an array of integers
  * @size: the number of elements in the array
  */
-
 void shell_sort(int *array, size_t size)
 {
 
