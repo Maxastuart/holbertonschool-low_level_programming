@@ -47,9 +47,8 @@ void swap_list(listint_t *temp2)
  * @list: A doubly linked list
  */
 void cocktail_sort_list(listint_t **list)
-{
-	listint_t *temp;
-	size_t i, length;
+{	listint_t *temp;
+	size_t i, length, flag = 0;
 
 	if (list == NULL || (*list) == NULL || (*list)->next == NULL)
 		return;
@@ -58,7 +57,7 @@ void cocktail_sort_list(listint_t **list)
 		temp = temp->next;
 	temp = *list;
 	while (length > 0)
-	{
+	{	flag = 0;
 		for (i = 0; i < length; i++)
 		{
 			temp = temp->next;
@@ -66,9 +65,13 @@ void cocktail_sort_list(listint_t **list)
 			{
 				swap_list(temp);
 				print_list(*list);
-				i--;
+				temp = temp->next;
+				flag = 1;
 			}
 		}
+		if (flag == 0)
+			return;
+		flag = 0;
 		for (i = 0; i < length; i++)
 		{
 			if (temp->prev->n <= temp->n)
@@ -79,8 +82,9 @@ void cocktail_sort_list(listint_t **list)
 				if (temp->prev == NULL)
 					*list = temp;
 				print_list(*list);
-			}
-		}
+				flag = 1;
+			}		}
+		if (flag == 0)
+			return;
 		length--;
-	}
-}
+	}}
