@@ -2,11 +2,11 @@
 
 CC = gcc
 SRC = main.c holberton.c
-OBJ = $^
+OBJ = main.o holberton.o
 NAME = holberton
 
-all: main.o $(NAME).o
-	$(CC) $(OBJ) -o $(NAME)
+all: $(OBJ)
+	$(CC) $^ -o $(NAME)
 
 %.o: %.c
 	$(CC) -c -o $@ $^
