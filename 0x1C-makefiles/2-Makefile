@@ -6,4 +6,4 @@ OBJ := main.o holberton.o
 NAME := holberton
 
 all: $(OBJ)
-	$(CC) $^ -o $(NAME)
+	$(CC) $(OBJ) -o $(NAME)
