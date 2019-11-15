@@ -1,0 +1,15 @@
+# -*- Makefile -*-
+
+CC = gcc
+SRC = main.c holberton.c
+OBJ = main.o holberton.o
+NAME = holberton
+
+all: main.o $(NAME).o
+	$(CC) $(OBJ) -o $(NAME)
+
+main.o: main.c
+	$(CC) -c -o main.o main.c
+
+$(NAME).o: $(NAME).c
+	$(CC) -c -o $(NAME).o $(NAME).c
