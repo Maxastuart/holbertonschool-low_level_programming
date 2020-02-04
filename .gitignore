@@ -3,6 +3,7 @@
 
 # Unignore all with extensions
 !*.*
+!*AUTHORS
 
 # Unignore all dirs
 !*/
@@ -11,6 +12,7 @@
 *~
 **/*~
 **/\#*
+**/.\#*
 
 # Ignore __pycache__
 **/__pycache__
@@ -18,6 +20,7 @@
 # Ignore main files
 **/*main.c
 **/*main.py
+**/*.json
 
 # Ignore object files and libraries
 *.o
@@ -33,4 +36,5 @@
 .DS_Store
 .DS_Store?
 ._*
+100-dump.sql
 .vs*
